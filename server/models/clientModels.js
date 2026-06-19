@@ -10,19 +10,25 @@ const clientSchema = mongoose.Schema({
         type:String, 
       required:true, 
     },
+   companyName: {
+          type:String,
+          required:true,
+          trim:true
+     },
     email:{
         type:String,
         required:true,
         unique:true, 
     },
     phone:{
-        type:Number, 
+        type:String, 
         required:true, 
         unique:true, 
+        trim:true, 
     },
     gstNumber:{
         type:String,
-        requied:true, 
+        required:true, 
         unique:true, 
     },
     address:{
@@ -31,7 +37,7 @@ const clientSchema = mongoose.Schema({
         
     }
     
-},{timeStamps:true})
+},{timestamps:true})
 
 const clientModel = mongoose.model('client',clientSchema);
 

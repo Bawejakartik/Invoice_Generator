@@ -5,7 +5,7 @@ const db = require("./config/db");
 const cookieParser = require('cookie-parser');
 
 const AuthRoute = require('./Routes/userRoute');
-
+const ClientRoute = require('./Routes/clientRoutes')
 PORT = process.env.PORT; 
 const app = express();
 app.use(cookieParser());
@@ -13,6 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const server = http.createServer(app);
 app.use('/api/v8',AuthRoute);
+app.use('/api/v10',ClientRoute);
 server.listen(PORT , () => {
     db.connect();
     
