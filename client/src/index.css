@@ -10,6 +10,15 @@ body,
   padding: 0;
 }
 
+html {
+  background-color: #e8edf5;
+  /* Stops the rubber-band/bounce scroll at the very edge of the
+     document. Once this is set, there's nothing for the browser
+     to reveal behind the page — no more white/gray flash, on any
+     page, no matter how hard or fast you scroll. */
+  overscroll-behavior: none;
+}
+
 body {
   overflow-x: hidden;
   background: linear-gradient(
@@ -19,5 +28,24 @@ body {
     #e4eaf5 100%
   );
   font-family: sans-serif;
+  transition: background-color 0.3s;
+  overscroll-behavior: none;
 }
 
+#root {
+  overscroll-behavior: none;
+}
+
+/* Dark mode — .dark class lives on <html>, toggled by ThemeContext. */
+html.dark {
+  background-color: #020617;
+}
+
+html.dark body {
+  background: linear-gradient(
+    145deg,
+    #0f172a 0%,
+    #111827 50%,
+    #0f172a 100%
+  );
+}

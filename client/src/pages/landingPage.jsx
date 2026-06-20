@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import ThemeToggle from "../../components/ThemeToggle";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -16,13 +18,47 @@ const styles = `
     --bg: #f8fafc;
     --white: #ffffff;
     --section-dark: #1e293b;
+
+    /* Theme-aware tokens — these are what components actually use */
+    --surface: #ffffff;
+    --surface-alt: #f8fafc;
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --nav-bg: #ffffff;
+    --hero-img-bg: linear-gradient(135deg, #e2f5ea 0%, #d1fae5 50%, #a7f3d0 100%);
+    --stat-card-bg: #ffffff;
+    --logo-muted: #94a3b8;
+    --footer-bg: #0f172a;
+    --cta-section-bg: #1e293b;
+    --cta-card-bg: #ffffff;
+  }
+
+  /* Dark mode overrides — toggled via .dark class on <html>, same
+     mechanism as the rest of the app (ThemeContext/ThemeToggle) */
+  .dark {
+    --surface: #0f172a;
+    --surface-alt: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --border-color: #334155;
+    --nav-bg: #0f172a;
+    --hero-img-bg: linear-gradient(135deg, #064e3b 0%, #022c22 50%, #052e16 100%);
+    --stat-card-bg: #1e293b;
+    --logo-muted: #64748b;
+    --footer-bg: #020617;
+    --cta-section-bg: #020617;
+    --cta-card-bg: #0f172a;
   }
 
   .fio-root {
     font-family: 'DM Sans', sans-serif;
-    color: var(--navy);
-    background: var(--white);
+    color: var(--text-primary);
+    background: var(--surface);
     line-height: 1.6;
+    transition: background 0.3s, color 0.3s;
   }
 
   /* NAV */
@@ -32,17 +68,18 @@ const styles = `
     justify-content: space-between;
     padding: 0 48px;
     height: 64px;
-    border-bottom: 1px solid var(--border);
-    background: var(--white);
+    border-bottom: 1px solid var(--border-color);
+    background: var(--nav-bg);
     position: sticky;
     top: 0;
     z-index: 100;
+    transition: background 0.3s, border-color 0.3s;
   }
   .fio-logo {
     font-family: 'DM Sans', sans-serif;
     font-weight: 700;
     font-size: 18px;
-    color: var(--navy);
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     gap: 6px;
@@ -60,7 +97,7 @@ const styles = `
   }
   .fio-nav-links a {
     text-decoration: none;
-    color: var(--slate);
+    color: var(--text-secondary);
     font-size: 14px;
     font-weight: 500;
     position: relative;
@@ -78,17 +115,17 @@ const styles = `
     transform-origin: left center;
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .fio-nav-links a:hover { color: var(--navy); }
+  .fio-nav-links a:hover { color: var(--text-primary); }
   .fio-nav-links a:hover::after { transform: scaleX(1); }
   .fio-nav-actions { display: flex; align-items: center; gap: 12px; }
   .btn-ghost {
     background: none; border: none; cursor: pointer;
     font-family: 'DM Sans', sans-serif;
     font-size: 14px; font-weight: 500;
-    color: var(--slate); padding: 8px 16px;
+    color: var(--text-secondary); padding: 8px 16px;
     border-radius: 8px; transition: background 0.2s;
   }
-  .btn-ghost:hover { background: var(--bg); }
+  .btn-ghost:hover { background: var(--surface-alt); }
   .btn-primary {
     background: var(--green); border: none; cursor: pointer;
     font-family: 'DM Sans', sans-serif;
@@ -117,6 +154,10 @@ const styles = `
     margin-bottom: 20px;
     letter-spacing: 0.02em;
   }
+  .dark .fio-hero-badge {
+    background: rgba(34,197,94,0.15);
+    color: #4ade80;
+  }
   .fio-hero-badge::before {
     content: '';
     width: 6px; height: 6px;
@@ -129,7 +170,7 @@ const styles = `
     font-weight: 900;
     line-height: 1.1;
     margin-bottom: 20px;
-    color: var(--navy);
+    color: var(--text-primary);
   }
   .fio-hero h1 em {
     color: var(--green);
@@ -137,7 +178,7 @@ const styles = `
   }
   .fio-hero p {
     font-size: 16px;
-    color: var(--muted);
+    color: var(--text-muted);
     margin-bottom: 32px;
     max-width: 420px;
     line-height: 1.7;
@@ -156,15 +197,15 @@ const styles = `
     background: none; border: none; cursor: pointer;
     font-family: 'DM Sans', sans-serif;
     font-size: 15px; font-weight: 500;
-    color: var(--slate);
+    color: var(--text-secondary);
     display: flex; align-items: center; gap: 8px;
     transition: color 0.2s;
   }
-  .btn-hero-secondary:hover { color: var(--navy); }
+  .btn-hero-secondary:hover { color: var(--text-primary); }
   .play-icon {
     width: 36px; height: 36px;
     border-radius: 50%;
-    background: var(--white);
+    background: var(--surface);
     box-shadow: 0 2px 8px rgba(0,0,0,0.12);
     display: flex; align-items: center; justify-content: center;
   }
@@ -179,9 +220,10 @@ const styles = `
     overflow: hidden;
     box-shadow: 0 24px 64px rgba(0,0,0,0.12);
     aspect-ratio: 4/3;
-    background: linear-gradient(135deg, #e2f5ea 0%, #d1fae5 50%, #a7f3d0 100%);
+    background: var(--hero-img-bg);
     display: flex; align-items: center; justify-content: center;
     position: relative;
+    transition: background 0.3s;
   }
   .mock-laptop {
     width: 80%;
@@ -210,23 +252,26 @@ const styles = `
   }
   .hero-stat-card {
     position: absolute;
-    background: white;
+    background: var(--stat-card-bg);
     border-radius: 12px;
     padding: 10px 16px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.16);
     display: flex; align-items: center; gap: 10px;
     font-size: 13px; font-weight: 600;
+    color: var(--text-primary);
+    transition: background 0.3s, color 0.3s;
   }
   .hero-stat-card.top-right { top: 16px; right: -16px; }
   .hero-stat-card.bottom-left { bottom: 16px; left: -16px; }
   .stat-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
-  .stat-label { color: var(--muted); font-weight: 400; font-size: 11px; }
+  .stat-label { color: var(--text-muted); font-weight: 400; font-size: 11px; }
 
   /* LOGOS */
   .fio-logos {
     padding: 32px 48px;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    transition: border-color 0.3s;
   }
   .fio-logos-inner {
     max-width: 1100px; margin: 0 auto;
@@ -234,12 +279,12 @@ const styles = `
   }
   .fio-logos p {
     font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--muted);
+    text-transform: uppercase; color: var(--text-muted);
     white-space: nowrap;
   }
   .logo-items { display: flex; align-items: center; gap: 48px; }
   .logo-item {
-    font-size: 15px; font-weight: 700; color: #94a3b8;
+    font-size: 15px; font-weight: 700; color: var(--logo-muted);
     letter-spacing: -0.02em;
   }
 
@@ -252,10 +297,10 @@ const styles = `
   .fio-features h2 {
     font-family: 'Fraunces', serif;
     font-size: 40px; font-weight: 900;
-    margin-bottom: 12px; color: var(--navy);
+    margin-bottom: 12px; color: var(--text-primary);
   }
   .fio-features > p {
-    font-size: 16px; color: var(--muted); margin-bottom: 56px;
+    font-size: 16px; color: var(--text-muted); margin-bottom: 56px;
   }
   .features-grid {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px;
@@ -270,35 +315,42 @@ const styles = `
     border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
     margin-bottom: 20px;
+    transition: background 0.3s;
+  }
+  .dark .feature-icon {
+    background: rgba(34,197,94,0.15);
   }
   .feature-icon svg { width: 22px; height: 22px; stroke: var(--green-dark); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .dark .feature-icon svg { stroke: #4ade80; }
   .feature-card h3 {
-    font-size: 17px; font-weight: 700; margin-bottom: 10px; color: var(--navy);
+    font-size: 17px; font-weight: 700; margin-bottom: 10px; color: var(--text-primary);
   }
   .feature-card p {
-    font-size: 14px; color: var(--muted); line-height: 1.65;
+    font-size: 14px; color: var(--text-muted); line-height: 1.65;
   }
 
   /* CTA */
   .fio-cta {
-    background: var(--section-dark);
+    background: var(--cta-section-bg);
     padding: 80px 48px;
+    transition: background 0.3s;
   }
   .fio-cta-inner {
     max-width: 640px; margin: 0 auto;
-    background: white;
+    background: var(--cta-card-bg);
     border-radius: 20px;
     padding: 56px 48px;
     text-align: center;
     box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    transition: background 0.3s;
   }
   .fio-cta h2 {
     font-family: 'Fraunces', serif;
     font-size: 40px; font-weight: 900; line-height: 1.15;
-    margin-bottom: 16px; color: var(--navy);
+    margin-bottom: 16px; color: var(--text-primary);
   }
   .fio-cta p {
-    font-size: 15px; color: var(--muted); margin-bottom: 32px; line-height: 1.65;
+    font-size: 15px; color: var(--text-muted); margin-bottom: 32px; line-height: 1.65;
   }
   .btn-cta {
     background: var(--green); color: white;
@@ -310,13 +362,14 @@ const styles = `
     display: inline-block; margin-bottom: 14px;
   }
   .btn-cta:hover { background: var(--green-dark); }
-  .cta-sub { font-size: 12px; color: #94a3b8; display: block; }
+  .cta-sub { font-size: 12px; color: var(--text-muted); display: block; }
 
   /* FOOTER */
   .fio-footer {
-    background: var(--navy);
+    background: var(--footer-bg);
     color: white;
     padding: 56px 48px 28px;
+    transition: background 0.3s;
   }
   .fio-footer-top {
     display: grid;
@@ -380,6 +433,7 @@ const ReportIcon = () => (
 
 export default function FreelancIO() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -407,13 +461,19 @@ export default function FreelancIO() {
             </li>
           </ul>
           <div className="fio-nav-actions">
-            <button className="btn-ghost">Login</button>
-            <button className="btn-primary">Sign Up Free</button>
+            {/* Dark mode toggle — sits right next to Login, as requested */}
+            <ThemeToggle />
+            <button className="btn-ghost" onClick={() => navigate("/login")}>
+              Login
+            </button>
+            <button className="btn-primary" onClick={() => navigate("/signup")}>
+              Sign Up Free
+            </button>
           </div>
         </nav>
 
         {/* HERO */}
-        <section style={{ background: "var(--white)" }}>
+        <section>
           <div className="fio-hero">
             <div>
               <div className="fio-hero-badge">
@@ -428,7 +488,11 @@ export default function FreelancIO() {
                 with confidence.
               </p>
               <div className="fio-hero-ctas">
-                <button className="btn-hero-primary">
+                {/* Linked to the signup flow */}
+                <button
+                  className="btn-hero-primary"
+                  onClick={() => navigate("/signup")}
+                >
                   Get Started for Free →
                 </button>
                 <button className="btn-hero-secondary">
@@ -552,7 +616,10 @@ export default function FreelancIO() {
               finances and grow their business with confidence. Start for free,
               upgrade when you're ready.
             </p>
-            <button className="btn-cta">Start Your Free Trial</button>
+            {/* Linked to the signup flow */}
+            <button className="btn-cta" onClick={() => navigate("/signup")}>
+              Start Your Free Trial
+            </button>
             <span className="cta-sub">No credit card required</span>
           </div>
         </section>
