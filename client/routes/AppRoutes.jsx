@@ -3,7 +3,8 @@ import LandingPage from "../src/pages/landingPage";
 import Register from "../src/pages/Register.jsx";
 import Login from "../src/pages/login.jsx";
 import Dashboard from "../src/pages/dashboard/index.jsx";
-import ForgetPassword from "../src/pages/ForgetPassword.jsx" ;
+import ForgetPassword from "../src/pages/ForgetPassword.jsx";
+import DashboardSettings from "../src/pages/dashboard/settings.jsx";
 
 const AppRoutes = ({ active, setActive }) => {
   return (
@@ -11,7 +12,9 @@ const AppRoutes = ({ active, setActive }) => {
       <Route path="/" element={<Navigate to="/home" />} />
       <Route path="/signup" element={<Register />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/dashboard" element={<Dashboard />}>
+        <Route path="settings" element={<DashboardSettings />} />
+      </Route>
       <Route path="/home" element={<LandingPage />} />
       <Route path="/forget-Password" element={<ForgetPassword />} />
     </Routes>

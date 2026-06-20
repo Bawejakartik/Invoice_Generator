@@ -1,6 +1,7 @@
 // components/Sidebar.jsx
 
-import React, { useState } from "react";
+import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   FileText,
@@ -13,15 +14,21 @@ import {
 } from "lucide-react";
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
-  const [activeItem, setActiveItem] = useState("Dashboard");
+  const navigate = useNavigate();
+  const location = useLocation();
 
+  // Each item now maps to a real route. Add more as you build out pages.
   const menuItems = [
-    { icon: LayoutDashboard, label: "Dashboard" },
-    { icon: FileText, label: "Invoices" },
-    { icon: CreditCard, label: "Transactions" },
-    { icon: BarChart3, label: "Reports" },
-    { icon: Users, label: "Clients" },
-    { icon: Settings, label: "Settings" },
+    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
+    { icon: FileText, label: "Invoices", path: "/dashboard/invoices" },
+    {
+      icon: CreditCard,
+      label: "Transactions",
+      path: "/dashboard/transactions",
+    },
+    { icon: BarChart3, label: "Reports", path: "/dashboard/reports" },
+    { icon: Users, label: "Clients", path: "/dashboard/clients" },
+    { icon: Settings, label: "Settings", path: "/dashboard/settings" },
   ];
 
   return (
@@ -59,12 +66,18 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         {/* Navigation */}
         <div className="mt-6 flex flex-col gap-2">
           {menuItems.map((item, index) => {
-            const isActive = activeItem === item.label;
+            // Active state now comes from the actual URL, not local state.
+            // "Dashboard" only counts as active on an exact match so it
+            // doesn't stay highlighted while you're on /dashboard/settings.
+            const isActive =
+              item.path === "/dashboard"
+                ? location.pathname === "/dashboard"
+                : location.pathname.startsWith(item.path);
 
             return (
               <button
                 key={index}
-                onClick={() => setActiveItem(item.label)}
+                onClick={() => navigate(item.path)}
                 className={`relative flex items-center ${
                   isOpen ? "justify-start px-4" : "justify-center px-0"
                 } gap-3 py-3 transition-all duration-200 overflow-hidden ${
