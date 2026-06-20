@@ -1,4 +1,9 @@
 import { useState } from "react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
+import ThemeToggle from "../../components/ThemeToggle";
 
 const GoogleIcon = () => (
   <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 48 48">
@@ -99,17 +104,58 @@ const ShieldIcon = () => (
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    const loginData = {
+      email,
+      password,
+    };
+
+    try {
+      setLoading(true);
+
+      const response = await axios.post("/api/v8/login", loginData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      localStorage.setItem("token", response.data.accessToken);
+
+      toast.success("Account Logged-In Successfully!", {
+        className: "bg-green-600 text-white",
+      });
+
+      navigate("/dashboard");
+    } catch (error) {
+      console.log(error);
+
+      toast.error(
+        error.response?.data?.message || "Login failed. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-4 py-10"
-      style={{
-        background:
-          "linear-gradient(145deg, #e8edf5 0%, #dde4f0 40%, #e4eaf5 100%)",
-      }}
+      className="min-h-screen flex items-center justify-center px-4 py-10 relative
+        bg-[linear-gradient(145deg,#e8edf5_0%,#dde4f0_40%,#e4eaf5_100%)]
+        dark:bg-[linear-gradient(145deg,#0f172a_0%,#111827_50%,#0f172a_100%)]
+        transition-colors duration-300"
     >
+      {/* Theme toggle — top right corner */}
+      <div className="absolute top-5 right-5">
+        <ThemeToggle />
+      </div>
+
       {/* Single centered card — everything inside */}
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl px-8 py-8">
+      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl dark:shadow-black/40 px-8 py-8 transition-colors duration-300">
         {/* Logo + branding — centered inside card */}
         <div className="flex flex-col items-center mb-6">
           <div
@@ -124,27 +170,29 @@ export default function LoginPage() {
               <path d="M9 21V12h6v9" fill="white" opacity="0.7" />
             </svg>
           </div>
-          <h1 className="text-xl font-bold text-black tracking-tight">
+          <h1 className="text-xl font-bold text-black dark:text-white tracking-tight">
             FreelancIO
           </h1>
-          <p className="text-sm text-slate-500 mt-0.5">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
             Finance management for the modern pro
           </p>
         </div>
 
         {/* Email */}
         <div className="mb-4">
-          <label className="block text-left text-sm font-medium text-slate-700 mb-1.5">
+          <label className="block text-left text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
             Email Address
           </label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
               <MailIcon />
             </span>
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="name@company.com"
-              className="w-full pl-9 pr-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 outline-none transition-all focus:border-green-400 focus:ring-2 focus:ring-green-100 focus:bg-white"
+              className="w-full pl-9 pr-4 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition-all focus:border-green-400 dark:focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:focus:ring-green-900/40 focus:bg-white dark:focus:bg-slate-800"
             />
           </div>
         </div>
@@ -152,29 +200,32 @@ export default function LoginPage() {
         {/* Password */}
         <div className="mb-4">
           <div className="flex justify-between items-center mb-1.5">
-            <label className="text-sm font-medium text-slate-600">
+            <label className="text-sm font-medium text-slate-600 dark:text-slate-300">
               Password
             </label>
-            <a
-              href="#"
-              className="text-xs font-semibold text-green-700 hover:text-green-500 transition-colors"
+            <button
+              type="button"
+              onClick={() => navigate("/forget-password")}
+              className="text-xs font-semibold text-green-700 dark:text-green-400 hover:text-green-500 transition-colors"
             >
               Forgot password?
-            </a>
+            </button>
           </div>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
               <LockIcon />
             </span>
             <input
               type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full pl-9 pr-10 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 outline-none transition-all focus:border-green-400 focus:ring-2 focus:ring-green-100 focus:bg-white"
+              className="w-full pl-9 pr-10 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition-all focus:border-green-400 dark:focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:focus:ring-green-900/40 focus:bg-white dark:focus:bg-slate-800"
             />
             <button
               type="button"
               onClick={() => setShowPassword((p) => !p)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-0.5"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors p-0.5"
             >
               {showPassword ? <EyeOpenIcon /> : <EyeOffIcon />}
             </button>
@@ -190,7 +241,7 @@ export default function LoginPage() {
             className={`w-4 h-4 rounded flex items-center justify-center border transition-all flex-shrink-0 ${
               remember
                 ? "bg-green-500 border-green-500"
-                : "border-slate-300 bg-slate-50"
+                : "border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800"
             }`}
           >
             {remember && (
@@ -207,48 +258,65 @@ export default function LoginPage() {
               </svg>
             )}
           </div>
-          <span className="text-sm text-slate-500">Remember this device</span>
+          <span className="text-sm text-slate-500 dark:text-slate-400">
+            Remember this device
+          </span>
         </div>
 
         {/* Login Button */}
         <button
           type="button"
-          className="w-full flex items-center justify-center gap-2 py-3 bg-green-500 hover:bg-green-600 active:scale-[0.99] text-white text-sm font-semibold rounded-xl transition-all shadow-sm hover:shadow-md hover:shadow-green-200 mb-5"
+          onClick={handleLogin}
+          disabled={loading}
+          className={`w-full flex items-center justify-center gap-2 py-3 text-white text-sm font-semibold rounded-xl transition-all shadow-sm mb-5 ${
+            loading
+              ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed"
+              : "bg-green-500 hover:bg-green-600 active:scale-[0.99] hover:shadow-md hover:shadow-green-200 dark:hover:shadow-green-900/40"
+          }`}
         >
-          Login <span className="text-base">→</span>
+          {loading ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              Logging in...
+            </>
+          ) : (
+            <>
+              Login <span className="text-base">→</span>
+            </>
+          )}
         </button>
 
         {/* Divider */}
         <div className="flex items-center gap-3 mb-4">
-          <div className="flex-1 h-px bg-slate-200" />
-          <span className="text-xs text-slate-400 whitespace-nowrap">
+          <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
+          <span className="text-xs text-slate-400 dark:text-slate-500 whitespace-nowrap">
             Or continue with
           </span>
-          <div className="flex-1 h-px bg-slate-200" />
+          <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
         </div>
 
         {/* Google Button */}
         <button
           type="button"
-          className="w-full flex items-center justify-center gap-2.5 py-3 bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-sm font-medium text-slate-600 rounded-xl transition-all shadow-sm hover:shadow-md mb-5"
+          className="w-full flex items-center justify-center gap-2.5 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-xl transition-all shadow-sm hover:shadow-md mb-5"
         >
           <GoogleIcon />
           Continue with Google
         </button>
 
         {/* Footer link — inside card */}
-        <p className="text-center text-sm text-slate-500">
+        <p className="text-center text-sm text-slate-500 dark:text-slate-400">
           Don't have an account?{" "}
           <a
             href="/signup"
-            className="font-semibold text-green-700 hover:text-green-500 transition-colors"
+            className="font-semibold text-green-700 dark:text-green-400 hover:text-green-500 transition-colors"
           >
             Get started for free
           </a>
         </p>
 
         {/* Security badge — inside card */}
-        <div className="flex items-center justify-center gap-1.5 mt-4 text-xs text-slate-400">
+        <div className="flex items-center justify-center gap-1.5 mt-4 text-xs text-slate-400 dark:text-slate-500">
           <ShieldIcon />
           <span>AES-256 Encrypted</span>
         </div>

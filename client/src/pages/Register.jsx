@@ -1,4 +1,9 @@
 import { useState } from "react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
+import ThemeToggle from "../../components/ThemeToggle";
 
 const MailIcon = () => (
   <svg
@@ -91,20 +96,63 @@ const ShieldIcon = () => (
 );
 
 export default function RegisterPage() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [agreed, setAgreed] = useState(false);
 
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+
+      const data = {
+        name: `${firstName} ${lastName}`,
+        email: email,
+        password: password,
+      };
+
+      await axios.post("/api/v8/signup", data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      toast.success("Account Created Successfully!");
+
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        error.response?.data?.message || "Signup failed. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div
-      className="min-h-screen min-w-screen flex items-center justify-center px-4 py-10"
-      style={{
-        background:
-          "linear-gradient(145deg, #e8edf5 0%, #dde4f0 40%, #e4eaf5 100%)",
-      }}
+      className="min-h-screen min-w-screen flex items-center justify-center px-4 py-10 relative
+        bg-[linear-gradient(145deg,#e8edf5_0%,#dde4f0_40%,#e4eaf5_100%)]
+        dark:bg-[linear-gradient(145deg,#0f172a_0%,#111827_50%,#0f172a_100%)]
+        transition-colors duration-300"
     >
+      {/* Theme toggle — top right corner */}
+      <div className="absolute top-5 right-5">
+        <ThemeToggle />
+      </div>
+
       {/* Single centered card — everything inside */}
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl px-8 py-8">
+      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl dark:shadow-black/40 px-8 py-8 transition-colors duration-300">
         {/* Logo + branding — centered inside card */}
         <div className="flex flex-col items-center mb-6">
           <div
@@ -119,48 +167,52 @@ export default function RegisterPage() {
               <path d="M9 21V12h6v9" fill="white" opacity="0.7" />
             </svg>
           </div>
-          <h1 className="text-xl font-bold text-black  tracking-tight">
+          <h1 className="text-xl font-bold text-black dark:text-white tracking-tight">
             FreelanceIO
           </h1>
-          <p className="text-sm text-slate-500 mt-0.5">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
             Finance management for the modern pro
           </p>
         </div>
 
         {/* Card title */}
-        <h2 className="text-base font-semibold text-slate-700 text-center mb-5">
+        <h2 className="text-base font-semibold text-slate-700 dark:text-slate-300 text-center mb-5">
           Create your account
         </h2>
 
         {/* First + Last name */}
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1.5">
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1.5">
               First Name
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
                 <UserIcon />
               </span>
               <input
                 type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
                 placeholder="Jane"
-                className="w-full pl-9 pr-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 outline-none transition-all focus:border-green-400 focus:ring-2 focus:ring-green-100 focus:bg-white"
+                className="w-full pl-9 pr-3 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition-all focus:border-green-400 dark:focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:focus:ring-green-900/40 focus:bg-white dark:focus:bg-slate-800"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1.5">
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1.5">
               Last Name
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
                 <UserIcon />
               </span>
               <input
                 type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
                 placeholder="Doe"
-                className="w-full pl-9 pr-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 outline-none transition-all focus:border-green-400 focus:ring-2 focus:ring-green-100 focus:bg-white"
+                className="w-full pl-9 pr-3 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition-all focus:border-green-400 dark:focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:focus:ring-green-900/40 focus:bg-white dark:focus:bg-slate-800"
               />
             </div>
           </div>
@@ -168,39 +220,43 @@ export default function RegisterPage() {
 
         {/* Email */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-slate-600 mb-1.5">
+          <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1.5">
             Email Address
           </label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
               <MailIcon />
             </span>
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="name@company.com"
-              className="w-full pl-9 pr-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 outline-none transition-all focus:border-green-400 focus:ring-2 focus:ring-green-100 focus:bg-white"
+              className="w-full pl-9 pr-3 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition-all focus:border-green-400 dark:focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:focus:ring-green-900/40 focus:bg-white dark:focus:bg-slate-800"
             />
           </div>
         </div>
 
         {/* Password */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-slate-600 mb-1.5">
+          <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1.5">
             Password
           </label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
               <LockIcon />
             </span>
             <input
               type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="Min. 8 characters"
-              className="w-full pl-9 pr-10 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 outline-none transition-all focus:border-green-400 focus:ring-2 focus:ring-green-100 focus:bg-white"
+              className="w-full pl-9 pr-10 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition-all focus:border-green-400 dark:focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:focus:ring-green-900/40 focus:bg-white dark:focus:bg-slate-800"
             />
             <button
               type="button"
               onClick={() => setShowPassword((p) => !p)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
             >
               {showPassword ? <EyeOpenIcon /> : <EyeOffIcon />}
             </button>
@@ -209,22 +265,24 @@ export default function RegisterPage() {
 
         {/* Confirm Password */}
         <div className="mb-5">
-          <label className="block text-sm font-medium text-slate-600 mb-1.5">
+          <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1.5">
             Confirm Password
           </label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
               <LockIcon />
             </span>
             <input
               type={showConfirm ? "text" : "password"}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Re-enter password"
-              className="w-full pl-9 pr-10 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 outline-none transition-all focus:border-green-400 focus:ring-2 focus:ring-green-100 focus:bg-white"
+              className="w-full pl-9 pr-10 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition-all focus:border-green-400 dark:focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:focus:ring-green-900/40 focus:bg-white dark:focus:bg-slate-800"
             />
             <button
               type="button"
               onClick={() => setShowConfirm((p) => !p)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
             >
               {showConfirm ? <EyeOpenIcon /> : <EyeOffIcon />}
             </button>
@@ -240,7 +298,7 @@ export default function RegisterPage() {
             className={`w-4 h-4 mt-0.5 rounded flex items-center justify-center border transition-all flex-shrink-0 ${
               agreed
                 ? "bg-green-500 border-green-500"
-                : "border-slate-300 bg-slate-50"
+                : "border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800"
             }`}
           >
             {agreed && (
@@ -257,11 +315,11 @@ export default function RegisterPage() {
               </svg>
             )}
           </div>
-          <span className="text-sm text-slate-500 leading-snug">
+          <span className="text-sm text-slate-500 dark:text-slate-400 leading-snug">
             I agree to the{" "}
             <a
               href="#"
-              className="text-green-700 font-semibold hover:text-green-500 transition-colors"
+              className="text-green-700 dark:text-green-400 font-semibold hover:text-green-500 transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
               Terms of Service
@@ -269,7 +327,7 @@ export default function RegisterPage() {
             and{" "}
             <a
               href="#"
-              className="text-green-700 font-semibold hover:text-green-500 transition-colors"
+              className="text-green-700 dark:text-green-400 font-semibold hover:text-green-500 transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
               Privacy Policy
@@ -280,24 +338,31 @@ export default function RegisterPage() {
         {/* Create Account Button */}
         <button
           type="button"
-          className="w-full flex items-center justify-center gap-2 py-3 bg-green-500 hover:bg-green-600 active:scale-[0.99] text-white text-sm font-semibold rounded-xl transition-all shadow-sm hover:shadow-md hover:shadow-green-200 mb-5"
+          onClick={handleRegister}
+          disabled={loading}
+          className={`w-full flex items-center justify-center gap-2 py-3 text-white text-sm font-semibold rounded-xl transition-all shadow-sm mb-5 ${
+            loading
+              ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed"
+              : "bg-green-500 hover:bg-green-600 active:scale-[0.99] hover:shadow-md hover:shadow-green-200 dark:hover:shadow-green-900/40"
+          }`}
         >
-          Create Account <span className="text-base">→</span>
+          {loading ? "Creating Account..." : "Create Account"}
+          {!loading && <span className="text-base">→</span>}
         </button>
 
         {/* Footer link — inside card */}
-        <p className="text-center text-sm text-slate-500">
+        <p className="text-center text-sm text-slate-500 dark:text-slate-400">
           Already have an account?{" "}
           <a
             href="/login"
-            className="font-semibold text-green-700 hover:text-green-500 transition-colors"
+            className="font-semibold text-green-700 dark:text-green-400 hover:text-green-500 transition-colors"
           >
             Sign in
           </a>
         </p>
 
         {/* Security badge — inside card */}
-        <div className="flex items-center justify-center gap-1.5 mt-4 text-xs text-slate-400">
+        <div className="flex items-center justify-center gap-1.5 mt-4 text-xs text-slate-400 dark:text-slate-500">
           <ShieldIcon />
           <span>AES-256 Encrypted</span>
         </div>
