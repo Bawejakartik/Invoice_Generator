@@ -1,4 +1,8 @@
 import { useState } from "react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const GoogleIcon = () => (
   <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 48 48">
@@ -96,9 +100,50 @@ const ShieldIcon = () => (
   </svg>
 );
 
+
+
+
+
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password , setPassword] = useState("");
+  const [loading , setLoading] = useState(false);
+    const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    const loginData = {
+      email,
+      password,
+    };
+
+    try {
+      setLoading(true);
+
+      const response = await axios.post("/api/v8/login", loginData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      localStorage.setItem("token", response.data.accessToken);
+
+      toast.success("Account Logged-In Successfully!", {
+        className: "bg-green-600 text-white",
+      });
+
+      navigate("/dashboard");
+    } catch (error) {
+      console.log(error);
+
+      toast.error(
+        error.response?.data?.message || "Login failed. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
@@ -143,6 +188,8 @@ export default function LoginPage() {
             </span>
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="name@company.com"
               className="w-full pl-9 pr-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 outline-none transition-all focus:border-green-400 focus:ring-2 focus:ring-green-100 focus:bg-white"
             />
@@ -155,12 +202,13 @@ export default function LoginPage() {
             <label className="text-sm font-medium text-slate-600">
               Password
             </label>
-            <a
-              href="#"
+            <button
+              type="button"
+              onClick={() => navigate("/forget-password")}
               className="text-xs font-semibold text-green-700 hover:text-green-500 transition-colors"
             >
               Forgot password?
-            </a>
+            </button>
           </div>
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
@@ -168,6 +216,8 @@ export default function LoginPage() {
             </span>
             <input
               type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               className="w-full pl-9 pr-10 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 outline-none transition-all focus:border-green-400 focus:ring-2 focus:ring-green-100 focus:bg-white"
             />
@@ -213,9 +263,24 @@ export default function LoginPage() {
         {/* Login Button */}
         <button
           type="button"
-          className="w-full flex items-center justify-center gap-2 py-3 bg-green-500 hover:bg-green-600 active:scale-[0.99] text-white text-sm font-semibold rounded-xl transition-all shadow-sm hover:shadow-md hover:shadow-green-200 mb-5"
+          onClick={handleLogin}
+          disabled={loading}
+          className={`w-full flex items-center justify-center gap-2 py-3 text-white text-sm font-semibold rounded-xl transition-all shadow-sm mb-5 ${
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-green-500 hover:bg-green-600 active:scale-[0.99] hover:shadow-md hover:shadow-green-200"
+          }`}
         >
-          Login <span className="text-base">→</span>
+          {loading ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              Logging in...
+            </>
+          ) : (
+            <>
+              Login <span className="text-base">→</span>
+            </>
+          )}
         </button>
 
         {/* Divider */}

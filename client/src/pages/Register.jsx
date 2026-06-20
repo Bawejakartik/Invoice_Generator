@@ -1,4 +1,10 @@
 import { useState } from "react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
+
+
 
 const MailIcon = () => (
   <svg
@@ -90,10 +96,51 @@ const ShieldIcon = () => (
   </svg>
 );
 
+
 export default function RegisterPage() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [agreed, setAgreed] = useState(false);
+const navigate = useNavigate();
+const [showPassword, setShowPassword] = useState(false);
+const [showConfirm, setShowConfirm] = useState(false);
+const [agreed, setAgreed] = useState(false);
+
+const [firstName, setFirstName] = useState("");
+const [lastName, setLastName] = useState("");
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
+const [confirmPassword, setConfirmPassword] = useState("");
+const [loading, setLoading] = useState(false);
+
+const handleRegister = async (e) => {
+  e.preventDefault();
+
+  try {
+    setLoading(true);
+
+    const data = {
+      name: `${firstName} ${lastName}`,
+      email : email,
+      password: password,
+    };
+
+    await axios.post("/api/v8/signup", data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    toast.success("Account Created Successfully!");
+
+    navigate("/login");
+  } catch (error) {
+    console.error(error);
+    toast.error(
+      error.response?.data?.message || "Signup failed. Please try again.",
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div
@@ -144,6 +191,8 @@ export default function RegisterPage() {
               </span>
               <input
                 type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
                 placeholder="Jane"
                 className="w-full pl-9 pr-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 outline-none transition-all focus:border-green-400 focus:ring-2 focus:ring-green-100 focus:bg-white"
               />
@@ -159,6 +208,8 @@ export default function RegisterPage() {
               </span>
               <input
                 type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
                 placeholder="Doe"
                 className="w-full pl-9 pr-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 outline-none transition-all focus:border-green-400 focus:ring-2 focus:ring-green-100 focus:bg-white"
               />
@@ -177,6 +228,8 @@ export default function RegisterPage() {
             </span>
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="name@company.com"
               className="w-full pl-9 pr-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 outline-none transition-all focus:border-green-400 focus:ring-2 focus:ring-green-100 focus:bg-white"
             />
@@ -194,6 +247,8 @@ export default function RegisterPage() {
             </span>
             <input
               type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="Min. 8 characters"
               className="w-full pl-9 pr-10 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 outline-none transition-all focus:border-green-400 focus:ring-2 focus:ring-green-100 focus:bg-white"
             />
@@ -218,6 +273,8 @@ export default function RegisterPage() {
             </span>
             <input
               type={showConfirm ? "text" : "password"}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Re-enter password"
               className="w-full pl-9 pr-10 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 outline-none transition-all focus:border-green-400 focus:ring-2 focus:ring-green-100 focus:bg-white"
             />
@@ -280,9 +337,16 @@ export default function RegisterPage() {
         {/* Create Account Button */}
         <button
           type="button"
-          className="w-full flex items-center justify-center gap-2 py-3 bg-green-500 hover:bg-green-600 active:scale-[0.99] text-white text-sm font-semibold rounded-xl transition-all shadow-sm hover:shadow-md hover:shadow-green-200 mb-5"
+          onClick={handleRegister}
+          disabled={loading}
+          className={`w-full flex items-center justify-center gap-2 py-3 text-white text-sm font-semibold rounded-xl transition-all shadow-sm mb-5 ${
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-green-500 hover:bg-green-600 active:scale-[0.99] hover:shadow-md hover:shadow-green-200"
+          }`}
         >
-          Create Account <span className="text-base">→</span>
+          {loading ? "Creating Account..." : "Create Account"}
+          {!loading && <span className="text-base">→</span>}
         </button>
 
         {/* Footer link — inside card */}
