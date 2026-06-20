@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const MailIcon = () => (
   <svg
@@ -132,7 +133,8 @@ const SecurityBadge = ({ label = "AES-256 Encrypted" }) => (
 /* -------------------------------------------------------
    STEP 1 — Forgot Password (email entry)
 ------------------------------------------------------- */
-function ForgotPasswordStep({ email, setEmail, onSubmit }) {
+function ForgotPasswordStep({ email, setEmail, onSubmit , loading }) {
+  
   return (
     <div className="w-full max-w-md bg-white rounded-2xl shadow-xl px-8 py-8">
       <div className="flex flex-col items-center mb-6">
@@ -171,9 +173,15 @@ function ForgotPasswordStep({ email, setEmail, onSubmit }) {
       <button
         type="button"
         onClick={onSubmit}
-        className="w-full flex items-center justify-center gap-2 py-3 bg-green-500 hover:bg-green-600 active:scale-[0.99] text-white text-sm font-semibold rounded-xl transition-all shadow-sm hover:shadow-md hover:shadow-green-200 mb-5"
+        className={`w-full flex items-center justify-center gap-2 py-3 text-white text-sm font-semibold rounded-xl transition-all shadow-sm ${
+          loading
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-green-500 hover:bg-green-600"
+        }`}
+        disabled={loading}
       >
-        Send Reset Code <span className="text-base">→</span>
+        {loading ? "Processing..." : "Send Reset Code"}{" "}
+        <span className="text-base">→</span>
       </button>
 
       <a
@@ -189,7 +197,7 @@ function ForgotPasswordStep({ email, setEmail, onSubmit }) {
 /* -------------------------------------------------------
    STEP 2 — Verify Email (6-digit code)
 ------------------------------------------------------- */
-function VerifyEmailStep({ email, code, setCode, onSubmit, onResend }) {
+function VerifyEmailStep({ email, code, setCode, onSubmit, onResend, loading }) {
   const inputsRef = useRef([]);
 
   const maskedEmail = (() => {
@@ -263,9 +271,14 @@ function VerifyEmailStep({ email, code, setCode, onSubmit, onResend }) {
       <button
         type="button"
         onClick={onSubmit}
-        className="w-full flex items-center justify-center gap-2 py-3 bg-green-500 hover:bg-green-600 active:scale-[0.99] text-white text-sm font-semibold rounded-xl transition-all shadow-sm hover:shadow-md hover:shadow-green-200 mb-4"
+        className={`w-full flex items-center justify-center gap-2 py-3 text-white text-sm font-semibold rounded-xl transition-all shadow-sm ${
+          loading
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-green-500 hover:bg-green-600"
+        }`}
+        disabled={loading}
       >
-        Verify Code <CheckCircleIcon />
+        {loading ? "Verifying..." : "Verify Code"} <CheckCircleIcon />
       </button>
 
       <p className="text-center text-sm text-slate-500 mb-5">
@@ -298,6 +311,7 @@ function ResetPasswordStep({
   confirmPassword,
   setConfirmPassword,
   onSubmit,
+  loading
 }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -393,9 +407,15 @@ function ResetPasswordStep({
       <button
         type="button"
         onClick={onSubmit}
-        className="w-full flex items-center justify-center gap-2 py-3 bg-green-500 hover:bg-green-600 active:scale-[0.99] text-white text-sm font-semibold rounded-xl transition-all shadow-sm hover:shadow-md hover:shadow-green-200 mb-5"
+        className={`w-full flex items-center justify-center gap-2 py-3 text-white text-sm font-semibold rounded-xl transition-all shadow-sm ${
+          loading
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-green-500 hover:bg-green-600"
+        }`}
+        disabled={loading}
       >
-        Update Password <span className="text-base">→</span>
+        {loading ? "Updating..." : "Update Password"}{" "}
+        <span className="text-base">→</span>
       </button>
 
       <a
@@ -417,25 +437,118 @@ export default function ForgotPasswordFlow() {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSendCode = () => {
-    if (!email) return;
-    setStep(2);
+  const handleSendCode = async () => {
+    if (!email) {
+      toast.error("Please enter your email");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const response = await axios.post(
+        "/api/v8/forgetpassword",
+        { email },
+        {
+          withCredentials: true,
+        },
+      );
+
+      toast.success(response.data.message);
+      setStep(2);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to send OTP");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleVerifyCode = () => {
-    if (code.some((d) => d === "")) return;
-    setStep(3);
-  };
+  const handleVerifyCode = async () => {
+    const otp = code.join("");
 
-  const handleResendCode = () => {
-    setCode(["", "", "", "", "", ""]);
-  };
+    if (otp.length !== 6) {
+      toast.error("Enter complete OTP");
+      return;
+    }
 
-  const handleResetPassword = () => {
-    if (!password || password !== confirmPassword) return;
-    // Submit new password to backend here
-    window.location.href = "/login";
+    try {
+      setLoading(true);
+
+      const response = await axios.post(
+        "/api/v8/verify_otp",
+        { otp },
+        {
+          withCredentials: true,
+        },
+      );
+
+      toast.success(response.data.message);
+      setStep(3);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "OTP verification failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleResendCode = async () => {
+    try {
+      setLoading(true);
+
+      const response = await axios.post(
+        "/api/v8/forgetpassword",
+        { email },
+        {
+          withCredentials: true,
+        },
+      );
+
+      setCode(["", "", "", "", "", ""]);
+
+      toast.success("OTP resent successfully");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to resend OTP");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const navigate = useNavigate();
+
+  const handleResetPassword = async () => {
+    if (!password) {
+      toast.error("Password is required");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const response = await axios.post(
+        "/api/v8/setNewPassword",
+        {
+          newpassword: password,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+
+      toast.success(response.data.message);
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Password reset failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -451,6 +564,7 @@ export default function ForgotPasswordFlow() {
           email={email}
           setEmail={setEmail}
           onSubmit={handleSendCode}
+          loading={loading}
         />
       )}
       {step === 2 && (
@@ -460,6 +574,7 @@ export default function ForgotPasswordFlow() {
           setCode={setCode}
           onSubmit={handleVerifyCode}
           onResend={handleResendCode}
+          loading={loading}
         />
       )}
       {step === 3 && (
@@ -469,6 +584,7 @@ export default function ForgotPasswordFlow() {
           confirmPassword={confirmPassword}
           setConfirmPassword={setConfirmPassword}
           onSubmit={handleResetPassword}
+          loading={loading}
         />
       )}
     </div>
