@@ -6,6 +6,6 @@ route.post('/client',isAuthenticated,createClient);
 route.get('/getAllClient',isAuthenticated,getAllClient);
 route.get('/:id',isAuthenticated,getSingleClient);
 route.post('/updatedClient/:id',isAuthenticated,updateClient);
-route.get('/delete/:id',isAuthenticated,deleteClient);
+route.delete('/delete/:id',isAuthenticated,deleteClient);
 
 module.exports = route; 

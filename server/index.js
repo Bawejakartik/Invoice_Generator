@@ -5,13 +5,23 @@ const db = require("./config/db");
 const cookieParser = require('cookie-parser');
 const InvoiceRoute = require('./Routes/invoiceRoute');
 const AuthRoute = require('./Routes/userRoute');
-const ClientRoute = require('./Routes/clientRoutes')
+const ClientRoute = require('./Routes/clientRoutes');
+const cors = require("cors");
 PORT = process.env.PORT; 
 const app = express();
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const server = http.createServer(app);
+
+app.use(
+  cors({
+    origin: "http://localhost:5173", // your Vite dev server
+    credentials: true, // needed if you ever use cookies; harmless if you only use Bearer tokens
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
 app.use('/api/v8',AuthRoute);
 app.use('/api/v10',ClientRoute);
 app.use('/api/v12',InvoiceRoute);
