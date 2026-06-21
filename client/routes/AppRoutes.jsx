@@ -5,7 +5,9 @@ import Login from "../src/pages/login.jsx";
 import Dashboard from "../src/pages/dashboard/index.jsx";
 import ForgetPassword from "../src/pages/ForgetPassword.jsx";
 import DashboardSettings from "../src/pages/dashboard/settings.jsx";
-import DashboardClient from "../src/pages/dashboard/clients.jsx"
+import DashboardClient from "../src/pages/dashboard/clients.jsx";
+import AddNewClient from "../src/pages/dashboard/AddClient.jsx";
+import EditClient from "../src/pages/dashboard/EditClient.jsx";
 
 const AppRoutes = ({ active, setActive }) => {
   return (
@@ -16,6 +18,8 @@ const AppRoutes = ({ active, setActive }) => {
       <Route path="/dashboard" element={<Dashboard />}>
         <Route path="settings" element={<DashboardSettings />} />
         <Route path="clients" element={<DashboardClient />} />
+        <Route path="addClients" element={<AddNewClient />} />
+        <Route path="edit/:id" element={<EditClient />} />
       </Route>
       <Route path="/home" element={<LandingPage />} />
       <Route path="/forget-Password" element={<ForgetPassword />} />
