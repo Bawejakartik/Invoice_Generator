@@ -20,13 +20,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   // Each item now maps to a real route. Add more as you build out pages.
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-    { icon: FileText, label: "Invoices", path: "/dashboard/invoices" },
-    {
-      icon: CreditCard,
-      label: "Transactions",
-      path: "/dashboard/transactions",
-    },
-    { icon: BarChart3, label: "Reports", path: "/dashboard/reports" },
+    { icon: FileText, label: "Invoices", path: "/dashboard/invoices" }, 
     { icon: Users, label: "Clients", path: "/dashboard/clients" },
     { icon: Settings, label: "Settings", path: "/dashboard/settings" },
   ];
