@@ -8,9 +8,10 @@ import DashboardSettings from "../src/pages/dashboard/settings.jsx";
 import DashboardClient from "../src/pages/dashboard/clients.jsx";
 import AddNewClient from "../src/pages/dashboard/AddClient.jsx";
 import EditClient from "../src/pages/dashboard/EditClient.jsx";
-import Invoices from "../src/pages/dashboard/Invoices.jsx";
-import CreateInvoice from "../src/pages/dashboard/CreateInvoice.jsx";
-import InvoiceDetails from "../src/pages/dashboard/InvoiceDetails.jsx";
+import InvoiceDashboard from "../src/pages/dashboard/Invoices.jsx"
+import NewInvoice from "../src/pages/dashboard/NewInvoice.jsx";
+import EditInvoiceStatus from "../src/pages/dashboard/EditInvoiceStatus.jsx";
+
 const AppRoutes = ({ active, setActive }) => {
   return (
     <Routes>
@@ -22,24 +23,12 @@ const AppRoutes = ({ active, setActive }) => {
         <Route path="clients" element={<DashboardClient />} />
         <Route path="addClients" element={<AddNewClient />} />
         <Route path="edit/:id" element={<EditClient />} />
+        <Route path="Invoices" element={<InvoiceDashboard />} />
+        <Route path="invoices/new" element={<NewInvoice />} />
       </Route>
       <Route path="/home" element={<LandingPage />} />
       <Route path="/forget-Password" element={<ForgetPassword />} />
-
-        <Route
-          path="invoices"
-          element={<Invoices />}
-        />
-
-        <Route
-          path="invoices/create"
-          element={<CreateInvoice />}
-        />
-
-        <Route
-          path="invoices/:id"
-          element={<InvoiceDetails />} />
-      
+      <Route path="/dashboard/invoices/status/:id" element={<EditInvoiceStatus />} />
     </Routes>
   );
 };

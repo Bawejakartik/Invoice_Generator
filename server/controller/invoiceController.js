@@ -14,8 +14,8 @@ exports.create_Invoice = async(req,res) =>{
        const {clientId,dueDate,items,taxPercentage,discount,notes} = req.body; 
 
     if(!clientId || !dueDate || !items || items.length == 0 ){
-        return res.status(200).json({
-            success:true, 
+        return res.status(400).json({
+            success:false, 
             message:"Please provide all the required field"
         })
     }
@@ -29,6 +29,7 @@ exports.create_Invoice = async(req,res) =>{
       }
       const latestInvoice = await InvoiceModel.findOne().sort({createdAt:-1});
       let invoiceNumber; 
+      console.log(latestInvoice)
       if(!latestInvoice){
         invoiceNumber= `INV-${new Date().getFullYear()}-001`;
         

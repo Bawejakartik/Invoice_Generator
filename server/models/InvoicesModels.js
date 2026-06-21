@@ -78,7 +78,7 @@ totalAmount:{
         
     }
     
-})
+},{timestamps:true})
 
 const InvoiceModel = mongoose.model('Invoice',InvoiceSchema);
 
