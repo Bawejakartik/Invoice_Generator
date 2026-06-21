@@ -8,6 +8,8 @@ import DashboardSettings from "../src/pages/dashboard/settings.jsx";
 import DashboardClient from "../src/pages/dashboard/clients.jsx";
 import AddNewClient from "../src/pages/dashboard/AddClient.jsx";
 import EditClient from "../src/pages/dashboard/EditClient.jsx";
+import InvoiceDashboard from "../src/pages/dashboard/Invoices.jsx"
+
 
 const AppRoutes = ({ active, setActive }) => {
   return (
@@ -20,6 +22,7 @@ const AppRoutes = ({ active, setActive }) => {
         <Route path="clients" element={<DashboardClient />} />
         <Route path="addClients" element={<AddNewClient />} />
         <Route path="edit/:id" element={<EditClient />} />
+        <Route path="Invoices" element={<InvoiceDashboard />} />
       </Route>
       <Route path="/home" element={<LandingPage />} />
       <Route path="/forget-Password" element={<ForgetPassword />} />
