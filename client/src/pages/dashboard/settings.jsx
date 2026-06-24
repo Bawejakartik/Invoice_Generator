@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Upload, Shield, Wallet, LifeBuoy } from "lucide-react";
 import SettingsSidebar from "../../pages/components/SettingsSidebar";
-
+  
 const Settings = () => {
   const [activeSection, setActiveSection] = useState("business");
 

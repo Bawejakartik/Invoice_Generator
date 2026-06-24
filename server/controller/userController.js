@@ -59,6 +59,13 @@ exports.login = async(req,res) =>{
         })
     }
     let user  = await User.findOne({email});
+
+    if(!user.password) {
+        return res.status(400).json({
+            success:false,
+            message:"This account uses Google login . Please continue with google  "
+        })
+    }
     if(!user){
         return res.status(401).json({
             success:false, 

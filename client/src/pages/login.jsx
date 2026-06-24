@@ -5,6 +5,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import ThemeToggle from "../../components/ThemeToggle";
 
+
+const handleGoogleLogin = () =>{
+  window.location.href = "http://localhost:4000/api/v8/auth/google";
+}
+
 const GoogleIcon = () => (
   <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 48 48">
     <path
@@ -25,6 +30,8 @@ const GoogleIcon = () => (
     />
   </svg>
 );
+
+
 
 const EyeOpenIcon = () => (
   <svg
@@ -298,6 +305,7 @@ export default function LoginPage() {
         {/* Google Button */}
         <button
           type="button"
+          onClick={handleGoogleLogin}
           className="w-full flex items-center justify-center gap-2.5 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-xl transition-all shadow-sm hover:shadow-md mb-5"
         >
           <GoogleIcon />
