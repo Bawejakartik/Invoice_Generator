@@ -86,7 +86,9 @@ exports.login = async(req,res) =>{
                 httpOnly:true,
               }
            res.cookie("token",accessToken,{
-            httpOnly:true, 
+         httpOnly: true,
+  sameSite: 'none',
+  secure: true,
            })
 
           
