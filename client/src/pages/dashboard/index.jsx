@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
+import DashboardOverview from "./DashboardOverview";
 
 const Dashboard = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -24,21 +25,12 @@ const Dashboard = () => {
       >
         <Topbar />
 
-        {/* Removed mt-[80px] — Topbar is sticky and already occupies
-            its own 80px of height in the layout flow, so content
-            below it starts immediately with no extra gap. */}
         <div>
-          {isOverview ? (
-            <div className="p-8">
-              <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm dark:shadow-black/30 border border-gray-200 dark:border-slate-700 h-[500px] flex items-center justify-center transition-colors duration-300">
-                <h1 className="text-2xl font-semibold text-gray-400 dark:text-slate-500">
-                  Dashboard Content Here
-                </h1>
-              </div>
-            </div>
-          ) : (
-            <Outlet />
-          )}
+          {/* Replaced the "Dashboard Content Here" placeholder with
+              the real DashboardOverview page (KPIs, charts, recent
+              invoices table, etc). Nested routes like /dashboard/settings
+              or /dashboard/clients still render via <Outlet />. */}
+          {isOverview ? <DashboardOverview /> : <Outlet />}
         </div>
       </div>
     </div>

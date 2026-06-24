@@ -7,17 +7,17 @@ import SettingsSidebar from "../../pages/components/SettingsSidebar";
 const Settings = () => {
   const [activeSection, setActiveSection] = useState("business");
 
-  // Form state for Business Profile
-  const [businessName, setBusinessName] = useState("Sterling Creative Ltd.");
+  
+  const [businessName, setBusinessName] = useState("");
   const [professionalTitle, setProfessionalTitle] = useState(
-    "Senior Brand Consulta",
+    "",
   );
   const [professionalEmail, setProfessionalEmail] = useState(
-    "alex@sterlingcreative.com",
+    "",
   );
-  const [website, setWebsite] = useState("https://www.sterlingcreative.com");
+  const [website, setWebsite] = useState("");
   const [address, setAddress] = useState(
-    "22 Baker Street, Marylebone, London, NW1 6XE, United Kingdom",
+    "",
   );
 
   // Form state for Tax Settings
