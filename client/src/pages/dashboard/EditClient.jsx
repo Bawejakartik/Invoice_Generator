@@ -32,7 +32,7 @@ const EditClient = () => {
         setError(null);
 
         const response = await axios.get(
-          `http://localhost:4000/api/v10/${id}`,
+          `https://invoice-generator-z035.onrender.com/api/v10/${id}`,
           { withCredentials: true },
         );
 
@@ -77,7 +77,7 @@ const EditClient = () => {
       setSaving(true);
 
       const response = await axios.post(
-        `http://localhost:4000/api/v10/updatedClient/${id}`,
+        `https://invoice-generator-z035.onrender.com/api/v10/updatedClient/${id}`,
         form,
         { withCredentials: true },
       );
@@ -105,7 +105,7 @@ const EditClient = () => {
       setArchiving(true);
 
       const response = await axios.post(
-        `http://localhost:4000/api/v10/updatedClient/${id}`,
+        `https://invoice-generator-z035.onrender.com/api/v10/updatedClient/${id}`,
         { status: "Archived" },
         { withCredentials: true },
       );

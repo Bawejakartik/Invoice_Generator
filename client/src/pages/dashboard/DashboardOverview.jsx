@@ -66,7 +66,7 @@ const DashboardOverview = () => {
         setError(null);
 
         const response = await axios.get(
-          "http://localhost:4000/api/v13/dashboard-summary",
+          "https://invoice-generator-z035.onrender.com/api/v13/dashboard-summary",
           { withCredentials: true },
         );
 

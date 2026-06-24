@@ -7,7 +7,7 @@ import ThemeToggle from "../../components/ThemeToggle";
 
 
 const handleGoogleLogin = () =>{
-  window.location.href = "http://localhost:4000/api/v8/auth/google";
+  window.location.href = "https://invoice-generator-z035.onrender.com/api/v8/auth/google";
 }
 
 const GoogleIcon = () => (
