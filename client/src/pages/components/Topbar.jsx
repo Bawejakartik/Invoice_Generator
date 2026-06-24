@@ -1,10 +1,13 @@
 // components/Topbar.jsx
 
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Bell, Plus, Search } from "lucide-react";
 import ThemeToggle from "../../../components/ThemeToggle";
 
 const Topbar = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="h-[80px] bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700 flex items-center justify-between px-8 sticky top-0 z-40 transition-colors duration-300">
       {/* Search Bar */}
@@ -20,16 +23,17 @@ const Topbar = () => {
 
       {/* Right Section */}
       <div className="flex items-center gap-5">
-        {/* Dark mode toggle */}
         <ThemeToggle />
 
         <button className="relative text-gray-600 dark:text-slate-300 hover:text-black dark:hover:text-white transition-colors">
           <Bell size={20} />
-
           <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
         </button>
 
-        <button className="bg-[#17C964] hover:bg-[#13b357] transition-all text-black font-semibold px-5 py-2.5 rounded-xl flex items-center gap-2">
+        <button
+          onClick={() => navigate("/dashboard/invoices/new")}
+          className="bg-[#17C964] hover:bg-[#13b357] transition-all text-black font-semibold px-5 py-2.5 rounded-xl flex items-center gap-2"
+        >
           <Plus size={18} />
           New Invoice
         </button>
