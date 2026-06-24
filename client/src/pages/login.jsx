@@ -129,6 +129,7 @@ export default function LoginPage() {
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true,
       });
 
       localStorage.setItem("token", response.data.accessToken);
