@@ -77,15 +77,20 @@ exports.login = async(req,res) =>{
             id:user._id, 
         }
         if(await bcrypt.compare(password,user.password)){
-              const token = jwt.sign(payload,process.env.SECRET_KEY,{expiresIn:'2h'})
+              const accessToken = jwt.sign(payload,process.env.SECRET_KEY,{expiresIn:'7d'})
 
+            
 
-              const option = {
+            const option = {
                 expiresIn:new Date(Date.now()+2*24*60*60*1000),
                 httpOnly:true,
               }
+           res.cookie("token",accessToken,{
+            httpOnly:true, 
+           })
 
-              res.cookie('token',token,option).status(200).json({
+          
+              res.status(200).json({
                 success:true,
                 message:"User Logged in successfully "
               })
