@@ -46,7 +46,7 @@ route.get(
 
   res.cookie("token",token,
     {httpOnly:true, 
-    sameSite:'lax',
+    sameSite:'none',
     secure:true,
 
   })
