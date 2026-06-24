@@ -2,6 +2,7 @@ const express = require("express");
 const http = require("http");
 const session = require("express-session");
 const passport = require("./config/googleConfig.js");
+const DashboardRoute = require("./Routes/dashboardRoutes");
 
 require("dotenv").config();
 const db = require("./config/db");
@@ -38,6 +39,7 @@ app.use(
 app.use('/api/v8',AuthRoute);
 app.use('/api/v10',ClientRoute);
 app.use('/api/v12',InvoiceRoute);
+app.use("/api/v13", DashboardRoute);
 
 server.listen(PORT , () => {
     db.connect();
