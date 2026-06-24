@@ -1,24 +1,18 @@
 // pages/Dashboard/Settings.jsx
 
 import React, { useState } from "react";
-import { Upload, Shield, Wallet, LifeBuoy } from "lucide-react";
+import { Upload, Shield, Wallet, LifeBuoy, LogOut } from "lucide-react";
 import SettingsSidebar from "../../pages/components/SettingsSidebar";
-  
+
 const Settings = () => {
   const [activeSection, setActiveSection] = useState("business");
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  
   const [businessName, setBusinessName] = useState("");
-  const [professionalTitle, setProfessionalTitle] = useState(
-    "",
-  );
-  const [professionalEmail, setProfessionalEmail] = useState(
-    "",
-  );
+  const [professionalTitle, setProfessionalTitle] = useState("");
+  const [professionalEmail, setProfessionalEmail] = useState("");
   const [website, setWebsite] = useState("");
-  const [address, setAddress] = useState(
-    "",
-  );
+  const [address, setAddress] = useState("");
 
   // Form state for Tax Settings
   const [taxRate, setTaxRate] = useState("20");
@@ -29,16 +23,52 @@ const Settings = () => {
     "GBP - British Pound Sterling (£)",
   );
 
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      const response = await fetch("/api/v8/logout", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        // Redirect to login page or home after successful logout
+        window.location.href = "/login";
+      } else {
+        console.error("Logout failed:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
   return (
     <div className="p-8">
       {/* Page heading */}
-      <div className="mb-7">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-          Account Settings
-        </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-          Manage your professional identity and financial preferences.
-        </p>
+      <div className="mb-7 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+            Account Settings
+          </h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Manage your professional identity and financial preferences.
+          </p>
+        </div>
+
+        {/* Logout button */}
+        <button
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800/40 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/40 hover:border-red-200 dark:hover:border-red-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <LogOut size={15} className={isLoggingOut ? "animate-spin" : ""} />
+          {isLoggingOut ? "Signing out…" : "Sign Out"}
+        </button>
       </div>
 
       <div className="flex gap-8">

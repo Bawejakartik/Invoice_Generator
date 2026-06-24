@@ -60,30 +60,25 @@ const DashboardOverview = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchSummary = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        
-        const response = await axios.get(
-          "https://invoice-generator-z035.onrender.com/api/v13/dashboard-summary",
-          { withCredentials: true },
-        );
-
-        setSummary(response.data.data);
-      } catch (err) {
-        console.error(err);
-        setError(
-          err.response?.data?.message || "Failed to load dashboard data.",
-        );
-        toast.error(
-          err.response?.data?.message || "Failed to load dashboard data.",
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+const fetchSummary = async (retries = 3) => {
+  try {
+    setLoading(true);
+    const response = await axios.get(
+      "https://invoice-generator-z035.onrender.com/api/v13/dashboard-summary",
+      { withCredentials: true, timeout: 35000 }, // 35s timeout for cold start
+    );
+    setSummary(response.data.data);
+  } catch (err) {
+    if (retries > 0) {
+      setTimeout(() => fetchSummary(retries - 1), 3000); // retry after 3s
+    } else {
+      setError(err.response?.data?.message || "Failed to load dashboard data.");
+      toast.error("Failed to load dashboard data.");
+    }
+  } finally {
+    setLoading(false);
+  }
+};
 
     fetchSummary();
   }, []);
