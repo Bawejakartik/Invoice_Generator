@@ -2,7 +2,7 @@ const express = require("express");
 const http = require("http");
 const session = require("express-session");
 const passport = require("./config/googleConfig.js");
-const DashboardRoute = require("./Routes/dashboardRoutes");
+const DashboardRoute = require("./Routes/DashboardRoutes");
 
 require("dotenv").config();
 const db = require("./config/db");
