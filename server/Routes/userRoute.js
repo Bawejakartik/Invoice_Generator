@@ -47,7 +47,7 @@ route.get(
   res.cookie("token",token,
     {httpOnly:true, 
     sameSite:'lax',
-    secure:false,
+    secure:true,
 
   })
    res.redirect("http://localhost:5173/dashboard")
