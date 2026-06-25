@@ -16,10 +16,11 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://invoice-generator-five-coral.vercel.app", // your Vite dev server
-    credentials: true, // needed if you ever use cookies; harmless if you only use Bearer tokens
+    origin: "https://invoice-generator-five-coral.vercel.app",
+    credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["set-cookie"],
   }),
 );
 app.use(cookieParser());
