@@ -50,8 +50,9 @@ route.get(
     secure:true,
 
   })
-   res.redirect("http://localhost:5173/dashboard")
+   res.redirect("https://invoice-generator-five-coral.vercel.app/dashboard")
 }
+
 )
 
 

@@ -16,7 +16,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // your Vite dev server
+    origin: "https://invoice-generator-five-coral.vercel.app", // your Vite dev server
     credentials: true, // needed if you ever use cookies; harmless if you only use Bearer tokens
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
