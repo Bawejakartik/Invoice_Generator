@@ -1,7 +1,7 @@
 // pages/Dashboard/DashboardOverview.jsx
 
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../../util/axiosInstance";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import {
@@ -63,10 +63,9 @@ const DashboardOverview = () => {
 const fetchSummary = async (retries = 3) => {
   try {
     setLoading(true);
-    const response = await axios.get(
-      "https://invoice-generator-z035.onrender.com/api/v13/dashboard-summary",
-      { withCredentials: true, timeout: 35000 }, // 35s timeout for cold start
-    );
+   const response = await axiosInstance.get("/api/v13/dashboard-summary", {
+     timeout: 35000,
+   });
     setSummary(response.data.data);
   } catch (err) {
     if (retries > 0) {

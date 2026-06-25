@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Upload, Shield, Wallet, LifeBuoy, LogOut } from "lucide-react";
 import SettingsSidebar from "../../pages/components/SettingsSidebar";
+import axiosInstance from "../../util/axiosInstance";
 
 const Settings = () => {
   const [activeSection, setActiveSection] = useState("business");
@@ -26,7 +27,7 @@ const Settings = () => {
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
-      const response = await fetch("/api/v8/logout", {
+      const response = await axiosInstance.post("/api/v8/logout", {
         method: "POST",
         credentials: "include",
         headers: {

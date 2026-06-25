@@ -1,7 +1,7 @@
 // pages/Dashboard/NewInvoice.jsx
 
 import React, { useState, useEffect, useMemo } from "react";
-import axios from "axios";
+import axiosInstance from "../../util/axiosInstance";
 import { toast } from "react-toastify";
 import {
   ChevronRight,
@@ -69,7 +69,7 @@ const NewInvoice = () => {
     const fetchClients = async () => {
       try {
         setLoadingClients(true);
-        const res = await axios.get("/api/v10/getAllClient", {
+        const res = await axiosInstance.get("/api/v10/getAllClient", {
           withCredentials: true,
         });
         setClients(res.data.clients || []);
@@ -176,7 +176,7 @@ const NewInvoice = () => {
       setSavingDraft(true);
 
       if (!invoiceId) {
-        const res = await axios.post(
+        const res = await axiosInstance.post(
           "/api/v12/invoice",
           buildPayload("Draft"),
           { withCredentials: true },
@@ -185,7 +185,7 @@ const NewInvoice = () => {
         setInvoiceNumber(res.data.invoice.invoiceNumber);
         toast.success("Saved as draft.");
       } else {
-        const res = await axios.put(
+        const res = await axiosInstance.put(
           `/api/v12/update/${invoiceId}`,
           buildPayload("Draft"),
           { withCredentials: true },
@@ -212,7 +212,7 @@ const NewInvoice = () => {
       let id = invoiceId;
 
       if (!id) {
-        const res = await axios.post(
+        const res = await axiosInstance.post(
           "/api/v12/invoice",
           buildPayload("Pending"),
           { withCredentials: true },
@@ -221,7 +221,7 @@ const NewInvoice = () => {
         setInvoiceId(id);
         setInvoiceNumber(res.data.invoice.invoiceNumber);
       } else {
-        const res = await axios.put(
+        const res = await axiosInstance.put(
           `/api/v12/update/${id}`,
           buildPayload("Pending"),
           { withCredentials: true },
@@ -231,7 +231,7 @@ const NewInvoice = () => {
         );
       }
 
-      await axios.post(
+      await axiosInstance.post(
         `/api/v12/invoice/${id}/sendEmail`,
         {},
         { withCredentials: true },

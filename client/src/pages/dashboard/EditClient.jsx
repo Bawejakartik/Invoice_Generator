@@ -1,7 +1,7 @@
 // pages/Dashboard/EditClient.jsx
 
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../../util/axiosInstance";
 import { toast } from "react-toastify";
 import { Save, ChevronRight } from "lucide-react";
 import { useNavigate, useParams, Link } from "react-router-dom";
@@ -31,8 +31,8 @@ const EditClient = () => {
         setLoading(true);
         setError(null);
 
-        const response = await axios.get(
-          `https://invoice-generator-z035.onrender.com/api/v10/${id}`,
+        const response = await axiosInstance.get(
+          `/api/v10/${id}`,
           { withCredentials: true },
         );
 
@@ -76,8 +76,8 @@ const EditClient = () => {
     try {
       setSaving(true);
 
-      const response = await axios.post(
-        `https://invoice-generator-z035.onrender.com/api/v10/updatedClient/${id}`,
+      const response = await axiosInstance.post(
+        `/api/v10/updatedClient/${id}`,
         form,
         { withCredentials: true },
       );
@@ -104,8 +104,8 @@ const EditClient = () => {
     try {
       setArchiving(true);
 
-      const response = await axios.post(
-        `https://invoice-generator-z035.onrender.com/api/v10/updatedClient/${id}`,
+      const response = await axiosInstance.post(
+        `/api/v10/updatedClient/${id}`,
         { status: "Archived" },
         { withCredentials: true },
       );

@@ -1,7 +1,7 @@
 // pages/Dashboard/Clients.jsx
 
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../../util/axiosInstance";
 import { toast } from "react-toastify";
 import {
   Users,
@@ -65,7 +65,7 @@ const Clients = () => {
         setLoading(true);
         setError(null);
 
-        const response = await axios.get(
+        const response = await axiosInstance.get(
           "/api/v10/getAllClient",
           { withCredentials: true },
         );

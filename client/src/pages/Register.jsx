@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import axiosInstance from "../util/axiosInstance";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
@@ -120,7 +120,7 @@ export default function RegisterPage() {
         password: password,
       };
 
-      await axios.post("/api/v8/signup", data, {
+      await axiosInstance.post("/api/v8/signup", data, {
         headers: {
           "Content-Type": "application/json",
         },

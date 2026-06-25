@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../../api/axiosInstance";
 import { toast } from "react-toastify";
 
 const MailIcon = () => (
@@ -448,7 +448,7 @@ export default function ForgotPasswordFlow() {
     try {
       setLoading(true);
 
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         "/api/v8/forgetpassword",
         { email },
         {
@@ -476,7 +476,7 @@ export default function ForgotPasswordFlow() {
     try {
       setLoading(true);
 
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         "/api/v8/verify_otp",
         { otp },
         {
@@ -496,7 +496,7 @@ export default function ForgotPasswordFlow() {
     try {
       setLoading(true);
 
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         "/api/v8/forgetpassword",
         { email },
         {
@@ -529,7 +529,7 @@ export default function ForgotPasswordFlow() {
     try {
       setLoading(true);
 
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         "/api/v8/setNewPassword",
         {
           newpassword: password,

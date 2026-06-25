@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import axiosInstance from "../util/axiosInstance";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
@@ -125,7 +125,7 @@ export default function LoginPage() {
     try {
       setLoading(true);
 
-      const response = await axios.post("/api/v8/login", loginData, {
+      const response = await axiosInstance.post("/api/v8/login", loginData, {
         headers: {
           "Content-Type": "application/json",
         },

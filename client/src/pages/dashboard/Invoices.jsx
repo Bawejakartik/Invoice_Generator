@@ -1,7 +1,7 @@
 // pages/Dashboard/Invoices.jsx
 
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../../util/axiosInstance";
 import { toast } from "react-toastify";
 import {
   FileText,
@@ -102,8 +102,8 @@ const Invoices = () => {
         setError(null);
 
         const [invoicesRes, statsRes] = await Promise.all([
-          axios.get("/api/v12/getInvoices", { withCredentials: true }),
-          axios.get("/api/v12/dashboard/stats", { withCredentials: true }),
+          axiosInstance.get("/api/v12/getInvoices", { withCredentials: true }),
+          axiosInstance.get("/api/v12/dashboard/stats", { withCredentials: true }),
         ]);
 
         setInvoices(invoicesRes.data.invoices || []);
@@ -209,7 +209,7 @@ const Invoices = () => {
     try {
       setDeletingId(id);
 
-      await axios.delete(`/api/v12/delete/${id}`, {
+      await axiosInstance.delete(`/api/v12/delete/${id}`, {
         withCredentials: true,
       });
 

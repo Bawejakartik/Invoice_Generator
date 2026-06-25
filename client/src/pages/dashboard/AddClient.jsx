@@ -1,7 +1,7 @@
 // pages/Dashboard/AddNewClient.jsx
 
 import React, { useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../util/axiosInstance";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, Lightbulb } from "lucide-react";
@@ -32,7 +32,7 @@ const AddNewClient = () => {
         address,
       };
 
-      await axios.post("/api/v10/client", data, {
+      await axiosInstance.post("/api/v10/client", data, {
         headers: {
           "Content-Type": "application/json",
         },

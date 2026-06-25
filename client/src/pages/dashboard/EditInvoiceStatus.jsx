@@ -1,7 +1,7 @@
 // pages/Dashboard/EditInvoiceStatus.jsx
 
 import  { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../../util/axiosInstance";
 import { toast } from "react-toastify";
 import { ChevronRight, ArrowLeft, Save } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -61,7 +61,7 @@ const EditInvoiceStatus = () => {
     const fetchInvoice = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`/api/v12/getInvoice/${id}`, {
+        const res = await axiosInstance.get(`/api/v12/getInvoice/${id}`, {
           withCredentials: true,
         });
         const inv = res.data.invoice;
