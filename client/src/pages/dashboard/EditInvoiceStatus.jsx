@@ -90,7 +90,7 @@ const EditInvoiceStatus = () => {
 
     try {
       setSaving(true);
-      await axios.put(
+      await axiosInstance.put(
         `/api/v12/status/${id}`,
         { status: selectedStatus },
         { withCredentials: true }
