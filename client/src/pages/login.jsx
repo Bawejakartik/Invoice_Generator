@@ -132,7 +132,7 @@ export default function LoginPage() {
         withCredentials: true,
       });
 
-      localStorage.setItem("token", response.data.accessToken);
+      // localStorage.setItem("token", response.data.accessToken);
 
       toast.success("Account Logged-In Successfully!", {
         className: "bg-green-600 text-white",
