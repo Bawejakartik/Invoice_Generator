@@ -10,8 +10,6 @@ export default defineConfig({
         target: "https://invoice-generator-z035.onrender.com",
         changeOrigin: true,
         secure: false,
-        cookieDomainRewrite: "localhost", // ✅ this is the key fix
-        cookiePathRewrite: "/",
       },
     },
   },
