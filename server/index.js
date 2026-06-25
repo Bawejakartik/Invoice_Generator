@@ -11,7 +11,7 @@ const InvoiceRoute = require('./Routes/invoiceRoute');
 const AuthRoute = require('./Routes/userRoute');
 const ClientRoute = require('./Routes/clientRoutes');
 const cors = require("cors");
-PORT = process.env.PORT; 
+const PORT = process.env.PORT; 
 const app = express();
 
 app.use(
