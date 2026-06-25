@@ -174,7 +174,7 @@ const Clients = () => {
 
       // FIXED: was axios.get — delete requests must use axios.delete
       // to match the backend's route.delete('/delete/:id', ...)
-      await axios.delete(`/api/v10/delete/${id}`, {
+      await axiosInstance.delete(`/api/v10/delete/${id}`, {
         withCredentials: true,
       });
 

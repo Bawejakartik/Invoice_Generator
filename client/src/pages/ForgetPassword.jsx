@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../../api/axiosInstance";
+import axiosInstance from "../../util/axiosInstance"; 
 import { toast } from "react-toastify";
 
 const MailIcon = () => (
