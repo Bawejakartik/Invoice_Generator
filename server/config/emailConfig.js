@@ -80,7 +80,7 @@ outro: "If you did not request this, please ignore this email.",
 const emailBody = mailGenerator.generate(email);
 
 await transporter.sendMail({
-from: `"Invoice Generator" <${process.env.GMAIL_USER}>`,
+from: `"Invoice Generator" <${process.env.SENDER_EMAIL}>`,
 to,
 subject,
 html: emailBody,
@@ -131,7 +131,7 @@ name: clientName,
 const emailBody = mailGenerator.generate(email);
 
 await transporter.sendMail({
-from: `"Invoice Generator" <${process.env.GMAIL_USER}>`,
+from: `"Invoice Generator" <${process.env.SENDER_EMAIL}>`,
 to,
 subject: `Invoice ${invoiceNumber}`,
 html: emailBody,
